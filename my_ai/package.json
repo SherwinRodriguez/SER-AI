@@ -11,10 +11,12 @@
   "dependencies": {
     "@clerk/nextjs": "^6.20.2",
     "axios": "^1.9.0",
+    "formidable": "^3.5.4",
     "groq-sdk": "^0.23.0",
     "mongoose": "^8.15.1",
     "next": "^15.3.3",
     "openai": "^5.1.0",
+    "pdf-parse": "^1.1.1",
     "postcss": "^8.5.4",
     "prismjs": "^1.30.0",
     "react": "^19.0.0",

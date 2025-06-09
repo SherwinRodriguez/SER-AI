@@ -16,20 +16,23 @@ export async function POST(req) {
       return NextResponse.json(
         {
           success: false,
-          message: "user not auth",
+          message: "User not authenticated",
         },
         { status: 401 }
       );
     }
 
-    // Connect to DB
-    await connectDB();
+    if (!promt || !promt.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Prompt cannot be empty",
+        },
+        { status: 400 }
+      );
+    }
 
-    // Validate chatId format if you want (optional)
-    // import mongoose from "mongoose";
-    // if (!mongoose.Types.ObjectId.isValid(chatId)) {
-    //   return NextResponse.json({ success: false, message: "Invalid chatId" }, { status: 400 });
-    // }
+    await connectDB();
 
     const data = await Chat.findOne({ userId, _id: chatId });
     if (!data) {
@@ -50,17 +53,19 @@ export async function POST(req) {
     };
     data.messages.push(userPrompt);
 
-    // Use groq-sdk for chat completion
+    // Prepare messages for Groq API: only role and content
+    const formattedMessages = data.messages.map(({ role, content }) => ({
+      role,
+      content,
+    }));
+
+    // Optional: limit messages to last 10 to avoid request size issues
+    const limitedMessages = formattedMessages.slice(-10);
+
+    // Send to Groq chat completion
     const completion = await groq.chat.completions.create({
-      messages: [
-        // You can pass full conversation history here, or just the latest user prompt
-        // Here, passing only the latest user prompt to keep it simple:
-        {
-          role: "user",
-          content: promt,
-        },
-      ],
-      model: "llama-3.3-70b-versatile", // your groq model name
+      messages: limitedMessages,
+      model: "llama-3.3-70b-versatile",
     });
 
     const message = completion.choices[0].message;
