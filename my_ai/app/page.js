@@ -43,8 +43,7 @@ export default function Home() {
           {messages.length === 0 ? (
             <>
             <div className="flex items-center gap-3">
-              <Image src={assets.logo_icon} alt="" className="h-16"/>
-              <p className="text-2xl font-medium">Hi, Im SER-AI.</p>
+              <p className="text-3xl font-medium">Hi, Im SER-AI.</p>
             </div>
             <p>How can I help you?</p>
             </>
@@ -71,7 +70,7 @@ export default function Home() {
             }
             {/* promt box */}
             <Promtbox isLoading={isLoading} setIsLoading={setIsLoading} messages={messages} setMessages={setMessages} />
-            <p className="text-xs absolute bottom-1 text-gray-500">AI-generated, for reference only</p>
+            <p className="text-xs absolute bottom-1 text-gray-500">AI-generated, fun Chat</p>
         </div>
       </div>
     </div>

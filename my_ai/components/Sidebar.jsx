@@ -9,15 +9,16 @@ const Sidebar = ({ expand, setExpand }) => {
   const { openSignIn } = useClerk()
   const { user, chats, createNewChat } = userAppContext()
 
-  // Keep openMenuId as simple primitive or null
   const [openMenuId, setOpenMenuId] = useState(null)
 
   return (
     <div className={`flex flex-col justify-between bg-[#19194d] pt-7 transition-all z-50 max-md:absolute max-md:h-screen ${expand ? 'p-4 w-64' : 'md:w-20 w-10 max-md:overflow-hidden'}`}>
       <div>
-        <div className={`flex ${expand ? "flex-row gap-10" : "flex-col items-center gap-8"}`}>
-          <Image className={expand ? 'w-36' : '10'}
-            src={expand ? assets.logo_text : assets.logo_icon} alt='' />
+        <div className={`flex ${expand ? "flex-row gap-25" : "flex-col items-center gap-8"}`}>
+        <h1 className="text-white text-2xl">SER-
+          <span className="text-pink-500">AI</span>
+        </h1>
+
           <div onClick={() => setExpand(!expand)}
             className='group relative flex items-center justify-center hover:bg-gray-500/20 transition-all duration-300 h-9 w-9 aspect-square rounded-lg cursor-pointer'>
             <Image src={assets.menu_icon} alt='' className='md:hidden' />
@@ -42,7 +43,7 @@ const Sidebar = ({ expand, setExpand }) => {
           <p className='my-1'>Recents</p>
           {chats.map(chat => (
             <ChatLabel
-              key={chat._id}              // use unique id here!
+              key={chat._id} 
               id={chat._id}
               name={chat.name}
               openMenuId={openMenuId}
@@ -52,18 +53,6 @@ const Sidebar = ({ expand, setExpand }) => {
         </div>
       </div>
       <div>
-        <div className={`flex items-center cursor-pointer group relative ${expand ? "gap-1 text-white/80 text-sm p-2.5 border-primary rounded-lg hover:bg-white/10 cursor-pointer" : "h-10 w-10 mx-auto hover:bg-gray-500/30 rounded-lg"}`}>
-          <Image className={expand ? "w-5" : "w-6.5 mx-auto"} src={expand ? assets.phone_icon : assets.phone_icon_dull} alt='' />
-          <div className={`absolute -top-60 mt-2 pb-8 ${!expand ? "-right-40" : ""} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto`}>
-            <div className='relative w-max bg-black text-white text-sm p-3 rounded-lg shadow-lg'>
-              <Image src={assets.qrcode} alt='' className='w-44' />
-              <p>Scan to get app</p>
-              <div className={`w-3 h-3 absolute bg-black rotate-45 ${expand ? "right-1/2 -bottom-1.5" : "left-4 -bottom-1.5"}`}></div>
-            </div>
-          </div>
-
-          {expand && <> <span>get app</span> <Image alt='' src={assets.new_icon} /></>}
-        </div>
         <div onClick={user ? null : openSignIn} className={`flex items-center ${expand ? 'hover:bg-white/10 rounded-lg' : 'justify-center w-full'} gap-3 text-white/60 text-sm p-2 mt-2 cursor-pointer`}>
           {
             user ? <UserButton /> :

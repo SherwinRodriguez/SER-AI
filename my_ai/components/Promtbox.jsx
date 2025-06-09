@@ -128,7 +128,7 @@ const Promtbox = ({ setIsLoading, isLoading }) => {
         onKeyDown={handleKeyDown}
         className='outline-none w-full resize-none overflow-hidden break-words bg-transparent'
         rows={2}
-        placeholder='Message Ser-ai'
+        placeholder='Message SER-AI'
         required
         onChange={(e) => setPromt(e.target.value)}
         value={promt}
