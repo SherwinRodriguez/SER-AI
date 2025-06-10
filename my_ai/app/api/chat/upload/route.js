@@ -1,6 +1,6 @@
 export async function POST(req) {
   try {
-    console.log("POST upload started");
+    console.log("Upload route called");
 
     const formData = await req.formData();
     console.log("Form data received");
@@ -13,21 +13,21 @@ export async function POST(req) {
         headers: { "Content-Type": "application/json" },
       });
     }
-    console.log(`File received: ${file.name}, type: ${file.type}`);
+
+    console.log(`File name: ${file.name}, type: ${file.type}`);
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    console.log(`Buffer size: ${buffer.length}`);
+    console.log("File buffer created, size:", buffer.length);
 
     let summary = "";
 
     if (file.type === "application/pdf") {
-      console.log("Importing pdfParse...");
+      console.log("Parsing PDF...");
       const { default: pdfParse } = await import('@/lib/pdfParser.js');
-      console.log("pdfParse imported, parsing PDF...");
       const data = await pdfParse(buffer);
-      console.log("PDF parsed");
       summary = data.text;
+      console.log("PDF parsed");
     } else if (
       file.type === "text/plain" ||
       file.name.endsWith(".txt")
@@ -43,6 +43,7 @@ export async function POST(req) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
+
   } catch (error) {
     console.error("Upload Error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
