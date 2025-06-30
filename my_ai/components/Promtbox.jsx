@@ -22,7 +22,7 @@ const Promtbox = ({ setIsLoading, isLoading }) => {
 
     if (!promt.trim()) return;
 
-    const currentPrompt = promt; // capture before clearing
+    const currentPrompt = promt;
     setIsLoading(true);
 
     const userMessage = {
@@ -31,7 +31,6 @@ const Promtbox = ({ setIsLoading, isLoading }) => {
       timestampss: Date.now(),
     };
 
-    // Update UI
     setSelectedChat((prev) => ({
       ...prev,
       messages: [...prev.messages, userMessage],
@@ -45,7 +44,7 @@ const Promtbox = ({ setIsLoading, isLoading }) => {
       )
     );
 
-    setPromt(""); // now it's safe to clear
+    setPromt("");
 
     try {
       const res = await fetch("/api/chat/ai", {
@@ -98,7 +97,7 @@ const Promtbox = ({ setIsLoading, isLoading }) => {
     const formData = new FormData();
     formData.append("file", file);
 
-    toast.loading("📄 Processing document...");
+    toast.loading("📄 Processing file...");
 
     try {
       const res = await fetch("/api/chat/upload", {
@@ -106,8 +105,31 @@ const Promtbox = ({ setIsLoading, isLoading }) => {
         body: formData,
       });
 
-      const data = await res.json();
       toast.dismiss();
+
+      const contentDisposition = res.headers.get("Content-Disposition");
+      const contentType = res.headers.get("Content-Type");
+
+      if (res.ok && contentType?.includes("application/zip") && contentDisposition) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+
+        const fileNameMatch = contentDisposition.match(/filename="?(.+?)"?$/);
+        const filename = fileNameMatch ? fileNameMatch[1] : `debugged_${file.name}`;
+
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        toast.success("✅ Debugged ZIP downloaded");
+        return;
+      }
+
+      const data = await res.json();
 
       if (res.ok) {
         toast.success("✅ Summary ready!");
@@ -171,7 +193,7 @@ const Promtbox = ({ setIsLoading, isLoading }) => {
           <input
             id="fileInput"
             type="file"
-            accept=".pdf,.txt"
+            accept=".pdf,.txt,.zip"
             onChange={handleFileUpload}
             className="hidden"
           />
